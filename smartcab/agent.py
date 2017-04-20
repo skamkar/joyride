@@ -10,7 +10,7 @@ class LearningAgent(Agent):
     """ An agent that learns to drive in the Smartcab world.
         This is the object you will be modifying. """ 
 
-    def __init__(self, env, learning=False, epsilon=1.0, alpha=0.5, epsilon_step=0.0005, alpha_step=0.0005):
+    def __init__(self, env, learning=False, epsilon=1.0, alpha=0.5, epsilon_step=0.005, alpha_step=0.005):
         super(LearningAgent, self).__init__(env)     # Set the agent in the evironment 
         self.planner = RoutePlanner(self.env, self)  # Create a route planner
         self.valid_actions = self.env.valid_actions  # The set of valid actions
@@ -72,10 +72,14 @@ class LearningAgent(Agent):
         ## DID ##
         #########
 
+        # Oncoming left turns are not necessary for safety
+        if inputs['oncoming'] == 'left':
+            inputs['oncoming'] = None
+
         # Set 'state' as a tuple of relevant data for the agent        
         state = (
             inputs['light'],
-            inputs['left'],
+            inputs['left'] == 'forward',
             inputs['oncoming'],
             waypoint
         )
